@@ -41,7 +41,7 @@ function render() {
   else {
     const uncertain=p.chosen.status==='critical';
     const arrival=Math.round(x-p.distance/0.8);
-    html=`<div class="${uncertain?'result-alert':'result-good'}"><span class="result-kicker">${uncertain?'先确认站点，再继续':'建议下一处补电'}</span><h3>${p.chosen.name}</h3><div class="result-metrics"><div><strong>约 ${fmt(p.distance)}</strong><small>公里 · 截图里程估算</small></div><div><strong>约 ${Math.max(0,arrival)}</strong><small>公里 · 预计到站表显</small></div></div><p>${statusNote(p.chosen)}。按本页保守算法，到站余量仅供决策参考；高德实时路线距离优先。</p><a class="action" href="${amapLink(p.chosen)}" target="_blank" rel="noopener">${navLabel(p.chosen)} ↗</a>${uncertain?'<p class="warning">这处站点的可用性未确认，不能仅凭页面预测驶入下一长距离路段。</p>':''}</div>`;
+    html=`<div class="${uncertain?'result-alert':'result-good'}"><span class="result-kicker">${uncertain?'先确认站点，再继续':'建议下一处补电'}</span><h3>${p.chosen.name}</h3><div class="result-metrics"><div><strong>约 ${fmt(p.distance)}</strong><small>公里 · ${p.chosen.status==='route-checked'?'高德驾车里程':'截图里程估算'}</small></div><div><strong>约 ${Math.max(0,arrival)}</strong><small>公里 · 预计到站表显</small></div></div><p>${statusNote(p.chosen)}。按本页保守算法，到站余量仅供决策参考；高德实时路线距离优先。</p><a class="action" href="${amapLink(p.chosen)}" target="_blank" rel="noopener">${navLabel(p.chosen)} ↗</a>${uncertain?'<p class="warning">这处站点的可用性未确认，不能仅凭页面预测驶入下一长距离路段。</p>':''}</div>`;
   }
   $('recommendation').innerHTML=html;
   const upcoming=stops.filter(s=>s.km>progressKm+0.5).slice(0,4);

@@ -1,5 +1,5 @@
-import {stops, days, anchors, TOTAL_KM} from './data.js?v=2';
-import {recommend, projectOnRoute, distanceTo} from './plan.js?v=2';
+import {stops, days, anchors, TOTAL_KM} from './data.js?v=3';
+import {recommend, projectOnRoute, distanceTo} from './plan.js?v=3';
 
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.round(n).toLocaleString('zh-CN');
@@ -32,11 +32,11 @@ function render() {
   $('recommendation').innerHTML=html;
   const upcoming=stops.filter(s=>s.km>progressKm+0.5).slice(0,4);
   $('nextStops').innerHTML=`<h3>接下来经过</h3>${upcoming.map(s=>`<div class="next-item"><div><b>${s.name}</b><small>${statusNote(s)}</small></div><strong>${fmt(distanceTo(s,progressKm))} km</strong></div>`).join('')}`;
-  try { localStorage.setItem('panda-route',JSON.stringify({current:current.value,range:range.value,reserve:reserve.value,progressKm,gpsMode})); } catch {}
+  try { localStorage.setItem('panda-route-v2',JSON.stringify({current:current.value,range:range.value,reserve:reserve.value,progressKm,gpsMode})); } catch {}
 }
 
 current.innerHTML=stops.slice(0,-1).map(s=>`<option value="${s.id}">${s.name} · 累计 ${fmt(s.km)} km</option>`).join('');
-try { const saved=JSON.parse(localStorage.getItem('panda-route')); if(saved){ current.value=saved.current||'0';range.value=saved.range||'150';reserve.value=saved.reserve||'25';progressKm=stops[Number(current.value)]?.km||0; }} catch {}
+try { const saved=JSON.parse(localStorage.getItem('panda-route-v2')); if(saved){ current.value=saved.current||'0';range.value=saved.range||'150';reserve.value=saved.reserve||'25';progressKm=stops[Number(current.value)]?.km||0; }} catch {}
 current.addEventListener('change',()=>{gpsMode=false;progressKm=stops[Number(current.value)].km;$('locationText').textContent=`手动选择：${stops[Number(current.value)].name}`;render();});
 [range,reserve].forEach(el=>el.addEventListener('input',render));
 document.querySelectorAll('[data-range]').forEach(btn=>btn.addEventListener('click',()=>{range.value=btn.dataset.range;render();}));

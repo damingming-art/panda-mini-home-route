@@ -14,7 +14,7 @@ function routeUrl(from, to, via) {
 }
 export const detourRouteUrl = routeUrl(chargingDetour.origin,chargingDetour.destination,chargingDetour.charger);
 function navigateToUrl(to) {
-  const params = new URLSearchParams({to:point(to),mode:'car',callnative:'1',src:'panda-mini-route'});
+  const params = new URLSearchParams({from:'',to:point(to),mode:'car',callnative:'1',src:'panda-mini-route'});
   return `https://uri.amap.com/navigation?${params}`;
 }
 function amapLink(stop) {

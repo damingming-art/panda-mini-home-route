@@ -1,5 +1,5 @@
-import {stops, days, anchors, TOTAL_KM} from './data.js';
-import {recommend, projectOnRoute, distanceTo} from './plan.js';
+import {stops, days, anchors, TOTAL_KM} from './data.js?v=2';
+import {recommend, projectOnRoute, distanceTo} from './plan.js?v=2';
 
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.round(n).toLocaleString('zh-CN');

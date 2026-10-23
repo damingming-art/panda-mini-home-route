@@ -55,8 +55,18 @@ $('locateBtn').addEventListener('click',()=>{
   },err=>{$('locationText').textContent=`未取得定位（${err.code===1?'未授权':'超时或信号不足'}），可手动选择站点`;},{enableHighAccuracy:true,timeout:12000,maximumAge:60000});
 });
 
-let prev=0;
-$('days').innerHTML=days.map(d=>{const trip=d.km-prev;prev=d.km;return `<div class="day"><div class="day-num">D${d.day}</div><div><b>${d.end}</b><small>当天约 ${fmt(trip)} km · 全程累计 ${fmt(d.km)} km</small>${d.flag?`<em>${d.flag}</em>`:''}</div></div>`}).join('');
+let dayStartKm=0;
+$('days').innerHTML=days.map(d=>{
+  const startKm=dayStartKm, trip=d.km-startKm;
+  const routeStops=stops.filter(s=>s.km>=startKm-0.01 && s.km<=d.km+0.01);
+  const start=routeStops[0], end=routeStops.at(-1);
+  const legs=routeStops.slice(1).map((s,i)=>({from:routeStops[i],to:s,km:s.km-routeStops[i].km}));
+  const maxGap=Math.max(...legs.map(l=>l.km),0);
+  const routeLink=amapLink(end);
+  const stopRows=legs.map(l=>`<div class="day-leg ${l.km>120?'day-leg-danger':l.km>100?'day-leg-check':''}"><span class="leg-distance">${l.km.toFixed(1)} km</span><div><b>${l.to.name}</b><small>${l.km>120?'超过 120 km，需核实中途补点':l.km>100?'接近补电阈值，建议到站补电':'到站检查直流快充状态'}</small></div><a href="${amapLink(l.to)}" target="_blank" rel="noopener">高德查站 ↗</a></div>`).join('');
+  dayStartKm=d.km;
+  return `<article class="day" id="day-${d.day}"><div class="day-heading"><span class="day-num">D${d.day}</span><div><b>${start.name} → ${d.end}</b><small>当天约 ${fmt(trip)} km · ${legs.length} 段 · 最长站间 ${maxGap.toFixed(1)} km</small></div></div>${d.flag?`<p class="day-alert">${d.flag}</p>`:''}<div class="day-map" role="img" aria-label="第 ${d.day} 天按里程排列的服务区线路示意图"><span class="map-start">起点 · ${start.name}</span><div class="map-line">${routeStops.map((s,i)=>`<span class="map-dot" style="left:${trip?((s.km-startKm)/trip*100).toFixed(2):0}%" title="${s.name} · 累计 ${s.km.toFixed(1)} km"></span>`).join('')}</div><span class="map-end">终点 · ${end.name}</span></div><details class="day-details"><summary>展开当天全部途经站与站间距离</summary><div class="day-legs">${stopRows}</div></details><div class="day-actions"><a class="day-route-btn" href="${routeLink}" target="_blank" rel="noopener">高德打开当天终点 ↗</a><small>此入口只搜索当天终点，暂不含途经点；请按上方顺序逐站核对。完整多途经点路线待精确点位核实后开放。</small></div></article>`;
+}).join('');
 let last=0;
 $('allStops').innerHTML=stops.slice(1).map(s=>{const gap=distanceTo(s,last);last=s.km;return `<div class="station ${s.status==='critical'?'station-critical':''}"><div class="station-main"><span class="station-index">${String(s.id).padStart(2,'0')}</span><div><b>${s.name}</b><small>距上站 ${gap.toFixed(1)} km · 原路线累计 ${s.km.toFixed(1)} km</small></div></div><div class="station-actions">${s.id<stops.length-1?`<button data-set="${s.id}">已到这里</button>`:''}<a href="${amapLink(s)}" target="_blank" rel="noopener">高德 ↗</a></div></div>`}).join('');
 $('allStops').addEventListener('click',e=>{const btn=e.target.closest('[data-set]');if(!btn)return;const id=Number(btn.dataset.set);if(id>=stops.length-1)return;current.value=id;progressKm=stops[id].km;gpsMode=false;$('locationText').textContent=`手动选择：${stops[id].name}`;render();window.scrollTo({top:document.getElementById('assist').offsetTop-70,behavior:'smooth'});});

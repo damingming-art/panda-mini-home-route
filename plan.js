@@ -9,10 +9,7 @@ export function recommend(stops, progressKm, displayRangeKm, reserveKm = 25) {
 }
 
 export function distanceTo(stop, progressKm) {
-  // Detour to the Kurchu off-highway charger adds about 9.6 km compared with
-  // the original Amap through-route cumulative numbers.
-  const detour = progressKm >= 936 && progressKm < 1041.9 && stop.km >= 1041.9 ? 9.6 : 0;
-  return Math.max(0,stop.km - progressKm + detour);
+  return Math.max(0, stop.km - progressKm);
 }
 
 export function projectOnRoute(lon, lat, anchors) {

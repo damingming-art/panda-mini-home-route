@@ -7,16 +7,11 @@ const current=$('currentStop'), range=$('range'), reserve=$('reserve');
 let progressKm=0, gpsMode=false;
 
 function amapLink(stop) {
-  if (stop.name.includes('库尔楚下高速')) {
-    const to=encodeURIComponent('85.400955,41.920870,e疆充·上库石化物流园充电站');
-    return `https://uri.amap.com/navigation?to=${to}&mode=car&policy=0&src=panda-mini-route&callnative=1`;
-  }
   const keyword=encodeURIComponent(stop.name);
   return `https://uri.amap.com/search?keyword=${keyword}&callnative=1&src=panda-mini-route`;
 }
-function navLabel(stop) { return stop.name.includes('库尔楚下高速')?'去高德查看路线':'在高德选站导航'; }
+function navLabel(stop) { return '在高德选站导航'; }
 function statusNote(stop) {
-  if (stop.name.includes('库尔楚')) return '下高速候选 · 入口和直流枪未确认';
   if (stop.name.includes('星星峡')) return '施工开放情况待确认';
   if (stop.name.includes('哈密')) return '新增补点 · 查出疆方向空闲枪';
   if (stop.name.includes('兰州北')) return '新增补点 · 查往兰州方向空闲枪';

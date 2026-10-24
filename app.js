@@ -1,4 +1,4 @@
-import {stops, days, anchors, TOTAL_KM, chargingDetour} from './data.js?v=8';
+import {stops, days, anchors, TOTAL_KM, chargingDetour} from './data.js?v=9';
 import {recommend, projectOnRoute, distanceTo} from './plan.js?v=5';
 
 const $=id=>document.getElementById(id);

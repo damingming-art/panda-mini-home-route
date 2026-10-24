@@ -18,3 +18,7 @@ test('有余量时推荐筑磊站，余量不足时不推荐',()=>{
   assert.equal(recommend(stops,858.5,100,25).chosen,null);
   assert.equal(stops.some(s=>s.name.includes('库尔楚')),false);
 });
+
+test('整段同起终点绕行差额清楚标注',()=>{
+  assert.ok(Math.abs((chargingDetour.viaRouteKm-chargingDetour.directRouteKm)-chargingDetour.extraRouteKm)<0.001);
+});

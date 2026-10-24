@@ -13,6 +13,9 @@ export const chargingDetour = {
   destination: {name:'焉耆服务区(吐和高速吐鲁番方向)', lon:86.523780, lat:42.036207, poi:'B03E400I69'},
   toChargerKm: 95.5,
   toDestinationKm: 93.5,
+  directRouteKm: 183.5,
+  viaRouteKm: 189.3,
+  extraRouteKm: 5.8,
   checkedAt: '2026-10-24'
 };
 // Route anchors are coarse city centres. GPS location is used only for an approximate

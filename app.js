@@ -1,4 +1,4 @@
-import {stops, days, anchors, TOTAL_KM, chargingDetour} from './data.js?v=10';
+import {stops, days, anchors, TOTAL_KM, chargingDetour} from './data.js?v=11';
 import {recommend, projectOnRoute, distanceTo} from './plan.js?v=6';
 
 const $=id=>document.getElementById(id);
@@ -29,6 +29,7 @@ function statusNote(stop) {
   if (stop.name.includes('星星峡')) return '官方称已投运且配 8 座充电桩 · 进站前核查出疆方向实时空闲';
   if (stop.name.includes('哈密')) return '新增补点 · 查出疆方向空闲枪';
   if (stop.name.includes('兰州北')) return '新增补点 · 查往兰州方向空闲枪';
+  if (stop.status === 'police-reported') return '酒泉公安交警清单列出连云港方向南区充电枪 · 实时状态待查';
   if (stop.name.includes('停车区')) return '停车区快充未核实 · 不计作补电点';
   if (stop.status === 'destination') return '目的地 · 用高德核实最后一段';
   return '高德截图列有充电 · 实时状态待查';

@@ -1,4 +1,4 @@
-import {stops, days, anchors, TOTAL_KM, chargingDetour} from './data.js?v=11';
+import {stops, days, anchors, TOTAL_KM, chargingDetour} from './data.js?v=12';
 import {recommend, projectOnRoute, distanceTo} from './plan.js?v=6';
 
 const $=id=>document.getElementById(id);
@@ -20,7 +20,7 @@ function navigateToUrl(to) {
 function amapLink(stop) {
   if (stop.name === '铁门关筑磊超充站') return navigateToUrl(chargingDetour.charger);
   if (stop.name === '焉耆服务区') return navigateToUrl(chargingDetour.destination);
-  const keyword=encodeURIComponent(stop.name);
+  const keyword=encodeURIComponent(stop.status === 'police-reported' ? `${stop.name} 连霍高速连云港方向` : stop.name);
   return `https://uri.amap.com/search?keyword=${keyword}&callnative=1&src=panda-mini-route`;
 }
 function navLabel(stop) { return stop.name === '铁门关筑磊超充站' || stop.name === '焉耆服务区' ? '在高德打开驾车路线' : '在高德选站导航'; }

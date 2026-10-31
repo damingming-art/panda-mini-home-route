@@ -1,0 +1,55 @@
+# 熊猫 mini 喀什 → 巴中下两镇充电路书
+
+公开网页：<https://damingming-art.github.io/panda-mini-home-route/>
+
+本仓库是两台电脑共用的工作底稿。手机看网页；MacBook Air 和 Mac mini 都通过 GitHub 同步代码与核实记录。网页不能读取充电枪实时状态，路上以高德和运营平台的实时信息为准。
+
+## 在 MacBook Air 接手
+
+1. 先查看 MacBook Air 可用空间，选一个本机可写、非 iCloud 同步的项目目录。Mac mini 的外置盘路径不适用于 MacBook Air。仓库约 612 KB；此项目目前没有依赖下载。
+2. 在终端进入你选好的目录，运行：
+   ```sh
+   git clone https://github.com/damingming-art/panda-mini-home-route.git
+   cd panda-mini-home-route
+   git switch -c charging-audit-macbook
+   ```
+   若已经克隆，先在仓库目录运行 `git pull --ff-only`，再建工作分支。
+3. 打开 ChatGPT 桌面版，切到 Codex，选择“打开文件夹”，选择刚克隆的 `panda-mini-home-route` 文件夹。开新会话，先读 `AGENTS.md` 和 `charging-audit.csv`。
+4. 若要让 Codex 操作 MacBook Air 上的 iPhone 镜像，在 ChatGPT 桌面版 Codex 安装并启用 Computer Use 插件，在 macOS 授予“屏幕录制”和“辅助功能”权限。先由你在 MacBook Air 打开“iPhone 镜像”，确认它能看到 iPhone 上的高德，再让 Codex 接手。iPhone 须在 MacBook Air 附近、保持锁定，Mac 与 iPhone 使用同一 Apple 账户且蓝牙、Wi-Fi 均开启。一个 iPhone 同一时间只能镜像到一台 Mac；离开 Mac mini 后要在 MacBook Air 上重新连接。详见 [Apple 官方要求](https://support.apple.com/zh-cn/120421) 和 [Codex Computer Use 设置](https://learn.chatgpt.com/docs/computer-use)。
+5. 可以把这句直接交给 MacBook Air 上的 Codex：
+
+   > 继续完善喀什火车站到巴中下两镇的熊猫 mini 充电路书。先读 AGENTS.md、charging-audit.csv、data.js 和 index.html。通过这台 MacBook Air 的 iPhone 镜像操作手机高德；若镜像未连接，先报告，不能声称已在手机高德核实。充电优先；逐站核对去巴中方向能否进入、国标直流枪是否能给熊猫 mini 充电、实时状态、现场或运营商电话、100–120 公里补电间隔。所有下高速补电点要用高德驾车路线核对实际出口、回高速入口与多走里程。证据不足就明确写未核实，不要把服务区名录当作当前可用证明。先更新核实表，再改网页，运行可用的检查并提交到工作分支，给我审阅。
+
+## 两台电脑如何同步
+
+- **MacBook Air 开始前**：`git pull --ff-only`，在自己的工作分支核实和修改；完成后提交并推送该分支，开 Pull Request。
+- **Mac mini 接手前**：先拉取 GitHub 最新提交，再看 MacBook Air 的 Pull Request，确认高德路线、充电证据和网页文字后合并。GitHub Pages 从 `main` 发布；工作分支不会立即改变公开网页。
+- 不要让两台电脑同时直接修改并推送 `main`。对实时充电信息记录核实日期，不把一次电话答复当成永久有效。
+- 对外公开的仓库中只放公开的站点电话，不放个人手机号、订单、实时定位或住店信息。
+
+## 文件
+
+- `data.js`：路书站点、累计里程、九天分段；多数站点仅为截图列表候选，并不表示当下可充。
+- `plan.js`：按表显剩余里程的 80% 再减预留里程，挑选 120 公里内的候选补电点。
+- `app.js`、`index.html`、`style.css`：手机网页。
+- `charging-audit.csv`：逐站核实工作表。
+- `route.test.js`：路线计算的 Node 测试；若 MacBook Air 已有 Node，可运行 `node --test route.test.js`。Mac mini 当前会话里 `node` 不在 PATH，未运行此测试。
+
+## 当前必须优先核实
+
+1. 阳霞 → 铁门关筑磊 → 焉耆：高德曾核对经双丰立交的两段路线，约 95.5 + 93.5 公里；**现场直流枪、营业、入口和电话仍须当天确认**。
+2. 梯子泉 → 哈密 → 骆驼圈子：哈密服务区须确认去巴中方向可进、直流枪可用。
+3. 沙泉子 → 星星峡 → 柳园：星星峡是关键补电点，须确认出疆侧。
+4. 永登 → 兰州北 → 太石：兰州北是关键补电点，须确认当日可用及行驶方向。
+
+其他任何超过 100–120 公里的路段也要重新审计。低温、逆风时继续增加余量。单次电话只能证明询问时的状态；进高速前和距站 20–30 公里时再次检查。
+
+## MacBook Air 上的手机高德核对顺序
+
+1. 在 MacBook Air 的“iPhone 镜像”中打开手机高德，确认当前路线为“喀什火车站 → 巴中市南江县下两镇”，高速偏好与 G3012、G30 主线一致。先记录高德路线方案和查询时间。
+2. 逐个查看路书站点的**去巴中方向**，区分南北侧、出疆侧与反方向；打开充电站详情，看国标直流枪、空闲与故障状态、营业时间、运营商、公开电话。
+3. 从当前站到下一补电站建立高德驾车路线，记录实际距离。需要下高速时，必须把“服务区/起点 → 高速出口 → 充电站 → 返回主线入口 → 下一服务区”作为驾车路线逐段核对；再比较不下高速直达路线，得到多走里程。
+4. 优先核对 `README.md` 上的四处关键补电关口，以及所有连续间隔超过 100–120 公里的路段。对不能确认的站，保留“未核实”，并找可到达的备用站。
+5. 将站名、方向、POI 链接或坐标、查验时间、实际路线公里数、公开电话和结果写入 `charging-audit.csv`。如果截图含实时位置、车牌或账号，留在本机，不推送到公开仓库。
+
+如果镜像连接超时：先确认 iPhone 已锁屏、靠近 MacBook Air、蓝牙和 Wi-Fi 开启；若 iPhone 正在被 Mac mini 镜像或已解锁，先结束该连接。不要把电脑网页高德检查称作手机高德核实。

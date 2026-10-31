@@ -19,6 +19,15 @@ test('有余量时推荐筑磊站，余量不足时不推荐',()=>{
   assert.equal(stops.some(s=>s.name.includes('库尔楚')),false);
 });
 
+test('即使旧设置把预留里程设为零，也至少保留 25 公里且候选充电站保持阻断',()=>{
+  const plan=recommend(stops,858.5,150,0);
+  assert.equal(plan.chosen,null);
+  assert.equal(plan.blocked,true);
+  const candidate=recommend(stops,858.5,160,0);
+  assert.equal(candidate.chosen?.name,'铁门关筑磊超充站');
+  assert.equal(candidate.blocked,true);
+});
+
 test('整段同起终点绕行差额清楚标注',()=>{
   assert.ok(Math.abs((chargingDetour.viaRouteKm-chargingDetour.directRouteKm)-chargingDetour.extraRouteKm)<0.001);
 });

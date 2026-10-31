@@ -1,5 +1,5 @@
-import {stops, days, anchors, TOTAL_KM, chargingDetour} from './data.js?v=12';
-import {recommend, projectOnRoute, distanceTo} from './plan.js?v=6';
+import {stops, days, anchors, TOTAL_KM, chargingDetour} from './data.js?v=13';
+import {recommend, projectOnRoute, distanceTo} from './plan.js?v=7';
 
 const $=id=>document.getElementById(id);
 const fmt=n=>Math.round(n).toLocaleString('zh-CN');
@@ -25,17 +25,17 @@ function amapLink(stop) {
 }
 function navLabel(stop) { return stop.name === '铁门关筑磊超充站' || stop.name === '焉耆服务区' ? '在高德打开驾车路线' : '在高德选站导航'; }
 function statusNote(stop) {
-  if (stop.name === '铁门关筑磊超充站') return '高德已核对双丰立交进出路线 · 到站前核查直流枪及开放状态';
-  if (stop.name.includes('星星峡')) return '官方称已投运且配 8 座充电桩 · 进站前核查出疆方向实时空闲';
-  if (stop.name.includes('哈密')) return '新增补点 · 查出疆方向空闲枪';
-  if (stop.name.includes('兰州北')) return '新增补点 · 查往兰州方向空闲枪';
+  if (stop.name === '铁门关筑磊超充站') return '2026-10-24 历史高德路线经双丰立交 · 本轮回高速入口与直流枪未核实';
+  if (stop.name.includes('星星峡')) return '官方报道配 8 座充电桩 · 出疆侧国标直流枪及实时状态未核实';
+  if (stop.name.includes('哈密')) return '官方报道已投运 24 座桩 · 出疆方向国标直流枪及实时状态未核实';
+  if (stop.name.includes('兰州北')) return '2024 年官方材料称双区超充站建设中 · 投运及实时状态未核实';
   if (stop.status === 'police-reported') return '酒泉公安交警清单列出连云港方向南区充电枪 · 实时状态待查';
   if (stop.name.includes('停车区')) return '停车区快充未核实 · 不计作补电点';
   if (stop.status === 'destination') return '目的地 · 用高德核实最后一段';
-  return '高德截图列有充电 · 实时状态待查';
+  return '路书候选站 · 去巴中方向与国标直流枪未核实';
 }
 function render() {
-  const x=Number(range.value)||0, r=Number(reserve.value)||0;
+  const x=Number(range.value)||0, r=Math.max(25,Number(reserve.value)||0);
   const p=recommend(stops,progressKm,x,r), remaining=Math.max(0,TOTAL_KM-progressKm);
   let html='';
   if (remaining<1) html='<div class="result-good"><span class="result-kicker">到家了</span><h3>已抵达下两镇</h3><p>一路辛苦，先休息。</p></div>';
@@ -43,7 +43,7 @@ function render() {
   else {
     const uncertain=p.chosen.status!=='destination';
     const arrival=Math.round(x-p.distance/0.8);
-    html=`<div class="${uncertain?'result-alert':'result-good'}"><span class="result-kicker">${uncertain?'先确认站点，再继续':'可到达目的地'}</span><h3>${p.chosen.name}</h3><div class="result-metrics"><div><strong>约 ${fmt(p.distance)}</strong><small>公里 · ${p.chosen.status==='route-checked'?'高德驾车里程':'截图里程估算'}</small></div><div><strong>约 ${Math.max(0,arrival)}</strong><small>公里 · 预计到站表显</small></div></div><p>${statusNote(p.chosen)}。按本页保守算法，到站余量仅供决策参考；高德实时路线距离优先。</p><a class="action" href="${amapLink(p.chosen)}" target="_blank" rel="noopener">${navLabel(p.chosen)} ↗</a>${uncertain?'<p class="warning">这处站点的可用性未确认，不能仅凭页面预测驶入下一长距离路段。</p>':''}</div>`;
+    html=`<div class="${uncertain?'result-alert':'result-good'}"><span class="result-kicker">${uncertain?'候选站 · 充电未核实':'可到达目的地'}</span><h3>${p.chosen.name}</h3><div class="result-metrics"><div><strong>约 ${fmt(p.distance)}</strong><small>公里 · ${p.chosen.status==='route-checked'?'历史高德驾车里程':'截图里程估算'}</small></div><div><strong>约 ${Math.max(0,arrival)}</strong><small>公里 · 预计到站表显</small></div></div><p>${statusNote(p.chosen)}。按本页保守算法，到站余量仅供决策参考；高德实时路线距离优先。</p><a class="action" href="${amapLink(p.chosen)}" target="_blank" rel="noopener">${navLabel(p.chosen)} ↗</a>${uncertain?'<p class="warning">尚未证实去巴中方向能进站且有可用国标直流枪。核实前请勿把这里视为可充电站或驶入下一长距离路段。</p>':''}</div>`;
   }
   $('recommendation').innerHTML=html;
   const upcoming=stops.filter(s=>s.km>progressKm+0.5).slice(0,4);
@@ -52,7 +52,7 @@ function render() {
 }
 
 current.innerHTML=stops.slice(0,-1).map(s=>`<option value="${s.id}">${s.name} · 累计 ${fmt(s.km)} km</option>`).join('');
-try { const saved=JSON.parse(localStorage.getItem('panda-route-v2')); if(saved){ current.value=saved.current||'0';range.value=saved.range||'150';reserve.value=saved.reserve||'25';progressKm=stops[Number(current.value)]?.km||0; }} catch {}
+try { const saved=JSON.parse(localStorage.getItem('panda-route-v2')); if(saved){ current.value=saved.current||'0';range.value=saved.range||'150';reserve.value=String(Math.max(25,Number(saved.reserve)||25));progressKm=stops[Number(current.value)]?.km||0; }} catch {}
 current.addEventListener('change',()=>{gpsMode=false;progressKm=stops[Number(current.value)].km;$('locationText').textContent=`手动选择：${stops[Number(current.value)].name}`;render();});
 [range,reserve].forEach(el=>el.addEventListener('input',render));
 document.querySelectorAll('[data-range]').forEach(btn=>btn.addEventListener('click',()=>{range.value=btn.dataset.range;render();}));

@@ -1,11 +1,12 @@
 export function recommend(stops, progressKm, displayRangeKm, reserveKm = 25) {
-  const usable = Math.max(0, displayRangeKm * 0.8 - reserveKm);
+  const usable = Math.max(0, displayRangeKm * 0.8 - Math.max(25, reserveKm));
   const ahead = stops.filter(s => s.km > progressKm + 0.5 && s.status !== 'rest-only');
   const within = ahead.filter(s => distanceTo(s, progressKm) <= Math.min(120, usable));
   const ordinary = within.filter(s => s.status !== 'critical');
   const chosen = ordinary.at(-1) || within.at(-1) || null;
   const next = ahead[0] || null;
-  return { usable, chosen, next, blocked: !chosen || chosen.status === 'critical', distance: chosen ? distanceTo(chosen, progressKm) : null };
+  // A route candidate is never proof that its charger works today.
+  return { usable, chosen, next, blocked: !chosen || chosen.status !== 'destination', distance: chosen ? distanceTo(chosen, progressKm) : null };
 }
 
 export function distanceTo(stop, progressKm) {

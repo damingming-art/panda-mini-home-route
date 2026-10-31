@@ -28,6 +28,14 @@ test('即使旧设置把预留里程设为零，也至少保留 25 公里且候�
   assert.equal(candidate.blocked,true);
 });
 
+test('未核实快充的停车区不得拆分超过 100 公里的补电候选间隔',()=>{
+  const candidates=stops.filter(s=>s.status!=='rest-only');
+  const gaps=candidates.slice(1).map((s,i)=>({from:candidates[i].name,to:s.name,km:s.km-candidates[i].km}));
+  const long=gaps.filter(g=>g.km>100);
+  assert.equal(long.length,7);
+  assert.ok(long.some(g=>g.from==='库车服务区'&&g.to==='阳霞服务区'&&Math.abs(g.km-115.6)<0.01));
+});
+
 test('整段同起终点绕行差额清楚标注',()=>{
   assert.ok(Math.abs((chargingDetour.viaRouteKm-chargingDetour.directRouteKm)-chargingDetour.extraRouteKm)<0.001);
 });

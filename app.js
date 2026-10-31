@@ -25,10 +25,10 @@ function amapLink(stop) {
 }
 function navLabel(stop) { return stop.name === '铁门关筑磊超充站' || stop.name === '焉耆服务区' ? '在高德打开驾车路线' : '在高德选站导航'; }
 function statusNote(stop) {
-  if (stop.name === '铁门关筑磊超充站') return '2026-10-24 历史高德路线经双丰立交 · 本轮回高速入口与直流枪未核实';
-  if (stop.name.includes('星星峡')) return '官方报道配 8 座充电桩 · 出疆侧国标直流枪及实时状态未核实';
-  if (stop.name.includes('哈密')) return '官方报道已投运 24 座桩 · 出疆方向国标直流枪及实时状态未核实';
-  if (stop.name.includes('兰州北')) return '2024 年官方材料称双区超充站建设中 · 投运及实时状态未核实';
+  if (stop.name === '铁门关筑磊超充站') return '11 月 1 日手机高德列国标 2015 直流枪，但空闲数显示 2/8 与 0/8 冲突；车辆兼容和回高速入口未核实';
+  if (stop.name.includes('星星峡')) return '南区连云港方向星星充电站有 POI，枪状态未核实；北区蔚来站虽直线近，东向驾车约 178.3 km';
+  if (stop.name.includes('哈密')) return '连云港方向服务区有 POI；附近同名充电站从东向服务区驾车约 37.6 km，不能按直线距离算同侧补电';
+  if (stop.name.includes('兰州北')) return '11 月 1 日手机高德：连云港方向理想 5C 站国标 2015 直流快充 3/3 空闲；入口与熊猫 mini 兼容未核实';
   if (stop.status === 'police-reported') return '酒泉公安交警清单列出连云港方向南区充电枪 · 实时状态待查';
   if (stop.name.includes('停车区')) return '停车区快充未核实 · 不计作补电点';
   if (stop.status === 'destination') return '目的地 · 用高德核实最后一段';
